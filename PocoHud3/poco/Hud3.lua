@@ -5,8 +5,8 @@ feel free to ask me through my mail: zenyr(at)zenyr.com. But please understand t
 ]]
 -- Note: Due to quirky PreCommit hook, revision number would *appear to* be 1 revision before than "released" luac files.
 local _ = UNDERSCORE
-local REV = 353
-local TAG = '0.262 hotfix 3 (8c903e1)'
+local REV = 357
+local TAG = '0.28 hotfix 2 (0e12cc9)'
 local inGame = CopDamage ~= nil
 local inGameDeep
 local me
@@ -1537,8 +1537,8 @@ function TPocoHud3:_hook()
 				else
 					me:RemoveBuff('triggerHappy')
 				end
-
 			end
+			return result
 		end)
 
 
@@ -2393,7 +2393,7 @@ function TPocoHud3:_hook()
 			end
 			if minionClr then
 				for __, material in ipairs( self._materials or {}) do
-						material:set_variable( idstr_contour_color, Vector3(minionClr.r,minionClr.g,minionClr.b)/4)
+						material:set_variable( idstr_contour_color, Vector3(minionClr.r,minionClr.g,minionClr.b))
 				end
 			end
 			end
@@ -2580,6 +2580,13 @@ function TPocoHud3:_hook()
 			Run('set_control_info', self,... )
 			if data and data.nr_hostages then
 				me._nr_hostages = data.nr_hostages
+			end
+		end)
+		hook( IngameWaitingForPlayersState, 'update***', function( self ,...)
+			local t, dt = unpack{...}
+			Run('update***', self,... )
+			if self._skip_data then
+				self._skip_data.total = 0.2
 			end
 		end)
 
@@ -2804,7 +2811,7 @@ end
 
 function TPocoHud3:_getAngle(unit)
 	if not (unit and type(unit)=='userdata' and alive(unit) and not self.dead) then
-		return 0
+		return
 	end
 	local uPos = unit:position()
 	local vec = self.camPos - uPos
