@@ -5,7 +5,7 @@ feel free to ask me through my mail: zenyr(at)zenyr.com. But please understand t
 ]]
 -- Note: Due to quirky PreCommit hook, revision number would *appear to* be 1 revision before than "released" luac files.
 local _ = UNDERSCORE
-local REV = 357
+local REV = 356
 local TAG = '0.28 hotfix 2 (0e12cc9)'
 local inGame = CopDamage ~= nil
 local inGameDeep
@@ -136,9 +136,6 @@ function TPocoHud3:onDestroy(gameEnd)
 	self:Menu(true,true) -- Force dismiss menu
 	if( alive( self._ws ) ) then
 		managers.gui_data:destroy_workspace(self._ws)
-	end
-	if( alive( self._worldws ) ) then
-		World:newgui():destroy_workspace( self._worldws )
 	end
 end
 function TPocoHud3:AddDmgPopByUnit(sender,unit,offset,damage,death,head,dmgType)
@@ -345,7 +342,7 @@ function TPocoHud3:Menu(dismiss,skipAnim)
 				local oTabs = C.PocoTabs:new(self._ws,{name = 'stats',x = 10, y = 10, w = 970, th = 30, fontSize = 18, h = tab.pnl:height()-20, pTab = tab})
 				local oTab = oTabs:add(L('_tab_heistStatus'))
 				local r,err = pcall(C._drawHeistStats,oTab) -- yeaaaah just in case. I know. I'm cheap
-				if not r then me:err('DHS:',err) end
+				if not r then me:err('DHS:'..err) end
 
 				oTab = oTabs:add(L('_tab_upgradeSkills'))
 				if inGame then
@@ -2582,6 +2579,7 @@ function TPocoHud3:_hook()
 				me._nr_hostages = data.nr_hostages
 			end
 		end)
+
 		hook( IngameWaitingForPlayersState, 'update***', function( self ,...)
 			local t, dt = unpack{...}
 			Run('update***', self,... )
